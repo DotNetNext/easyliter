@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EL
+namespace Easyliter
 {
     /// <summary>
     /// ** 实生成生类

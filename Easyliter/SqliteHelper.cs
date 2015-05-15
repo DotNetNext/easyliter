@@ -5,7 +5,7 @@ using System.Text;
 using System.Data;
 using System.Data.SQLite;
 using System.Data.SqlClient;
-namespace EL
+namespace Easyliter
 {
     /// <summary>
     /// ** SQLiteHelper

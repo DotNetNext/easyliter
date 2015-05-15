@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Reflection;
 using System.Linq.Expressions;
-namespace EL
+namespace Easyliter
 {
     /// <summary>
     /// ** 公共类

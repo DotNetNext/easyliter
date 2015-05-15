@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 
-namespace EL
+namespace Easyliter
 {
     /// <summary>
     /// ** Easyliter
@@ -171,7 +171,8 @@ namespace EL
                     }
                 }
             }
-            return reval.ToString();
+            message = reval.ToString();
+            return message;
         }
         /// <summary>
         /// 根据SQL创建类

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace EL
+namespace Easyliter
 {
     public static class Extensions
     {

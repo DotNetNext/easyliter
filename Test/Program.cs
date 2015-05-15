@@ -32,7 +32,7 @@ namespace Easyliter
 
             //insert operation
             //插入数据
-            InserData(e);
+            InsertData(e);
 
             //Search operation
             //查询操作
@@ -90,7 +90,7 @@ namespace Easyliter
 
         //insert operation
         //插入数据
-        private static void InserData(Easyliter e)
+        private static void InsertData(Easyliter e)
         {
             //添加
             Product p = new Product()

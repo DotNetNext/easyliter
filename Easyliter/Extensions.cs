@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Easyliter
 {
@@ -115,6 +116,19 @@ namespace Easyliter
         {
             string sql = entity.ToSql();
             return entity.e.Select<T>(sql);
+
+        }
+        public static T Single<T>(this El_Queryable<T> entity) where T : new()
+        {
+            string sql = entity.ToSql();
+            return entity.e.Select<T>(sql).Single();
+
+        }
+        public static T First<T>(this El_Queryable<T> entity) where T : new()
+        {
+            string sql = entity.ToSql();
+            sql = Regex.Replace(sql, "limit.*", "limit 0,1");
+            return entity.e.Select<T>(sql).Single();
 
         }
     }

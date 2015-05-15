@@ -76,6 +76,13 @@ namespace Easyliter
 
             //get list
             var list6 = queryable.ToList();
+
+            //get single
+            var item = e.Query<Product>().Where(c=>c.id==500).Single();
+
+            //get first
+            var first = queryable.First();
+
             //get sql
             string sql = queryable.ToSql();
         }

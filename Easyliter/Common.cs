@@ -20,7 +20,7 @@ namespace Easyliter
     internal class Common
     {
 
-         /// <summary>
+        /// <summary>
         /// 将dataTable转成List<T>
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -32,7 +32,7 @@ namespace Easyliter
             var list = new List<T>();
             Type t = typeof(T);
             var plist = new List<PropertyInfo>(typeof(T).GetProperties());
- 
+
             foreach (DataRow item in dt.Rows)
             {
                 T s = System.Activator.CreateInstance<T>();
@@ -50,7 +50,7 @@ namespace Easyliter
                 list.Add(s);
             }
             return list;
-        } 
+        }
 
 
         /// <summary>
@@ -77,20 +77,20 @@ namespace Easyliter
             string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
-                listParams.Add(new SQLiteParameter("@" + r.Name, r.GetValue(obj,null).ToString()));
+                listParams.Add(new SQLiteParameter("@" + r.Name, r.GetValue(obj, null).ToString()));
             }
 
             return listParams.ToArray();
         }
 
-        public static Dictionary<string,string> GetObjectToDictionary(object obj)
+        public static Dictionary<string, string> GetObjectToDictionary(object obj)
         {
-            Dictionary<string,string> reval = new Dictionary<string,string>();
+            Dictionary<string, string> reval = new Dictionary<string, string>();
             var propertiesObj = obj.GetType().GetProperties();
             string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
-                reval.Add(r.Name, r.GetValue(obj,null).ToString());
+                reval.Add(r.Name, r.GetValue(obj, null).ToString());
             }
 
             return reval;
@@ -100,10 +100,10 @@ namespace Easyliter
         {
             string sb = "(";
             //先处理左边
-            sb += ExpressionRouter(left);
+            sb += ExpressionRouter(left, false);
             sb += ExpressionTypeCast(type);
             //再处理右边
-            string tmpStr = ExpressionRouter(right);
+            string tmpStr = ExpressionRouter(right, true);
             if (tmpStr == "null")
             {
                 if (sb.EndsWith(" ="))
@@ -116,7 +116,7 @@ namespace Easyliter
             return sb += ")";
         }
         //表达式路由计算 
-        static string ExpressionRouter(Expression exp)
+        static string ExpressionRouter(Expression exp, bool isRight)
         {
             string sb = string.Empty;
             if (exp is BinaryExpression)
@@ -126,8 +126,20 @@ namespace Easyliter
             }
             else if (exp is MemberExpression)
             {
-                MemberExpression me = ((MemberExpression)exp);
-                return me.Member.Name;
+                if (!isRight)
+                {
+                    MemberExpression me = ((MemberExpression)exp);
+                    return me.Member.Name;
+                }
+                else
+                {
+                    var mexp = ((MemberExpression)exp);
+                    object value = (mexp.Expression as ConstantExpression).Value;
+                    string name = mexp.Member.Name;
+                    System.Reflection.FieldInfo info = value.GetType().GetField(name);
+                    object obj = info.GetValue(value);
+                    return obj + "";
+                }
             }
             else if (exp is NewArrayExpression)
             {
@@ -135,7 +147,7 @@ namespace Easyliter
                 StringBuilder tmpstr = new StringBuilder();
                 foreach (Expression ex in ae.Expressions)
                 {
-                    tmpstr.Append(ExpressionRouter(ex));
+                    tmpstr.Append(ExpressionRouter(ex, false));
                     tmpstr.Append(",");
                 }
                 return tmpstr.ToString(0, tmpstr.Length - 1);
@@ -144,13 +156,13 @@ namespace Easyliter
             {
                 MethodCallExpression mce = (MethodCallExpression)exp;
                 if (mce.Method.Name == "Like")
-                    return string.Format("({0} like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                    return string.Format("({0} like {1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
                 else if (mce.Method.Name == "NotLike")
-                    return string.Format("({0} Not like {1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                    return string.Format("({0} Not like {1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
                 else if (mce.Method.Name == "In")
-                    return string.Format("{0} In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                    return string.Format("{0} In ({1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
                 else if (mce.Method.Name == "NotIn")
-                    return string.Format("{0} Not In ({1})", ExpressionRouter(mce.Arguments[0]), ExpressionRouter(mce.Arguments[1]));
+                    return string.Format("{0} Not In ({1})", ExpressionRouter(mce.Arguments[0], false), ExpressionRouter(mce.Arguments[1], false));
             }
             else if (exp is ConstantExpression)
             {
@@ -167,10 +179,10 @@ namespace Easyliter
                 UnaryExpression ue = ((UnaryExpression)exp);
                 var mexp = (MemberExpression)ue.Operand;
                 object value = (mexp.Expression as ConstantExpression).Value;
-                string name =mexp.Member.Name;
+                string name = mexp.Member.Name;
                 System.Reflection.FieldInfo info = value.GetType().GetField(name);
                 object obj = info.GetValue(value);
-                return  obj+"";
+                return obj + "";
             }
             return null;
         }

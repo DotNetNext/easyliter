@@ -165,7 +165,12 @@ namespace Easyliter
             else if (exp is UnaryExpression)
             {
                 UnaryExpression ue = ((UnaryExpression)exp);
-                return ExpressionRouter(ue.Operand);
+                var mexp = (MemberExpression)ue.Operand;
+                object value = (mexp.Expression as ConstantExpression).Value;
+                string name =mexp.Member.Name;
+                System.Reflection.FieldInfo info = value.GetType().GetField(name);
+                object obj = info.GetValue(value);
+                return  obj+"";
             }
             return null;
         }

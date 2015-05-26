@@ -8,7 +8,7 @@ namespace Easyliter
     public class El_Queryable<T>
     {
         public List<EL_QueryItem> QueryItemList { get; set; }
-        public Easyliter e { get; set; }
+        public Client e { get; set; }
     }
 
     public class EL_QueryItem

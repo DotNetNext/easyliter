@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace Easyliter
+using Easyliter;
+namespace test
 {
     class Program
     {
@@ -16,7 +16,7 @@ namespace Easyliter
 
             //reference System.Data.SQLite
             //引用 System.Data.SQLite
-            Easyliter e = new Easyliter(connstr);
+            Client e = new Client(connstr);
 
             //Generate entity classes from a database
             //从数据库生成实体类
@@ -48,7 +48,7 @@ namespace Easyliter
 
         //search operation
         //查询操作
-        private static void Search(Easyliter e)
+        private static void Search(Client e)
         {
             ////By sql
             List<Product> list = e.Select<Product>("select * from product where  id>@num", new { num = 100 });
@@ -78,7 +78,8 @@ namespace Easyliter
             var list6 = queryable.ToList();
 
             //get single
-            var item = e.Query<Product>().Where(c=>c.id==500).Single();
+            int num = 500;
+            var item = e.Query<Product>().Where(c=>c.id==num).Single();
 
             //get first
             var first = queryable.First();
@@ -90,7 +91,7 @@ namespace Easyliter
 
         //insert operation
         //插入数据
-        private static void InsertData(Easyliter e)
+        private static void InsertData(Client e)
         {
             //添加
             Product p = new Product()
@@ -105,7 +106,7 @@ namespace Easyliter
 
         //update operation
         //更新操作
-        private static void UpdateData(Easyliter e)
+        private static void UpdateData(Client e)
         {
             e.Update<Product>(new { sku = "AGA123101", category_id = 1 } /*update columns*/, new { id = 434 }/*where columns*/);
         }
@@ -113,7 +114,7 @@ namespace Easyliter
 
         //Delete operation
         //删除操作
-        private static void DeleteData(Easyliter e)
+        private static void DeleteData(Client e)
         {
             e.Delete<Product>(100);//primary key
             e.Delete<Product>(new int[] { 1, 2, 3 });
@@ -121,7 +122,7 @@ namespace Easyliter
 
         //Generate entity classes from a database
         //从数据库生成实体类
-        private static void CreateClassFile(Easyliter e)
+        private static void CreateClassFile(Client e)
         {
             //by database
             var createCalss1 = e.CreateClass("Sqlite.Model"/*命名空间*/, @"D:\TFS\EmailBackup\Easyliter\Test\model"/*路径*/);
@@ -133,7 +134,7 @@ namespace Easyliter
 
         //基本操作
         //Basic operation
-        private static void BasicOperation(Easyliter e)
+        private static void BasicOperation(Client e)
         {
             var dt = e.GetDataTable("select * from product");
             var intVal = e.GetInt("select count(*) from product");

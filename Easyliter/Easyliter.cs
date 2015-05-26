@@ -18,11 +18,11 @@ namespace Easyliter
     /// ** 作者：sunkaixuan
     /// ** qq：610262374 欢迎交流,共同提高 ,命名语法等写的不好的地方欢迎大家的给出宝贵建议
     /// </summary>
-    public class Easyliter
+    public class Client
     {
         private string _connstr = null;
         public string message { get; private set; }
-        public Easyliter(string connstr)
+        public Client(string connstr)
         {
             _connstr = connstr;
         }
@@ -56,7 +56,7 @@ namespace Easyliter
                 TableName = type.Name,
                 AppendValues = new List<string>()
             };
-            q.e = new Easyliter(_connstr);
+            q.e = new Client(_connstr);
             q.QueryItemList.Add(item);
             return q;
         }

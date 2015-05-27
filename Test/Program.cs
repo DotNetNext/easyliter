@@ -20,7 +20,7 @@ namespace test
 
             //Generate entity classes from a database
             //从数据库生成实体类
-            CreateClassFile(e);
+            //CreateClassFile(e);
 
             //Delete operation
             //删除操作
@@ -70,22 +70,32 @@ namespace test
 
 
             //Query extenions
-            var queryable = e.Query<Product>().Where(x => x.id > 10).Where(x => x.id > 2).Select("id,sku")
+            var extObj = e.Query<Product>().Where(x => x.id > 10).Where(x => x.id > 2).Select("id,sku")
                 .OrderBy(El_Sort.asc, "id")
                 .OrderBy(El_Sort.desc, "sku").Take(100);
 
             //get list
-            var list6 = queryable.ToList();
+            var list6 = extObj.ToList();
+
+            //get dataTable
+            var dataTable = extObj.ToDataTable();
 
             //get single
             int num = 500;
             var item = e.Query<Product>().Where(c=>c.id==num).Single();
 
             //get first
-            var first = queryable.First();
+            var first = extObj.First();
 
             //get sql
-            string sql = queryable.ToSql();
+            string sql = extObj.ToSql();
+
+            //left join
+            List<V_Product> productList = e.Query<Product>()
+                .Join<Product, Category>(false /* true is  inner join*/ ) 
+                .On(" Product.category_id=Category.id ")
+                .OrderBy(El_Sort.desc, " Product.id")
+                .Select("Product.*,Category.name as category_name").JoinWhere("Product.id>300").ToNewList<Product, V_Product>();
         }
 
 

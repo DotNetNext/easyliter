@@ -19,6 +19,10 @@ namespace Easyliter
         public string OrderBy { get; set; }
         public int? Take { get; set; }
         public int? Skip { get; set; }
+
+        public string Join { get; set; }
+
+        public string On { get; set; }
     }
     /// <summary>
     /// 排序类型

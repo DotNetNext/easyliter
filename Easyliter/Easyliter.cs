@@ -225,7 +225,7 @@ namespace Easyliter
         /// <param name="entity"></param>
         /// <param name="isIdentity">主键是否为自增长,true可以不填,false必填</param>
         /// <returns></returns>
-        public bool Insert<TEntity>(TEntity entity, bool isIdentity = true) where TEntity : class
+        public object Insert<TEntity>(TEntity entity, bool isIdentity = true) where TEntity : class
         {
             Type type = entity.GetType();
             var primaryKeyName = GetPrimaryKey(type);
@@ -267,12 +267,12 @@ namespace Easyliter
             }
             //**去掉最后一个逗号 
             sb.Remove(sb.Length - 1, 1);
-            sb.Append(")");
+            sb.Append(");select last_insert_rowid();");
 
             var sql = sb.ToString();
-            var addRowCount = ExecuteNonQuery(sql, pars.ToArray());
-            message = string.Format("{0}行受影响", addRowCount);
-            return addRowCount > 0;
+            var lastInsertRowId = GetString(sql, pars.ToArray());
+            message = string.Format("插入成功");
+            return lastInsertRowId;
 
         }
 
@@ -336,6 +336,42 @@ namespace Easyliter
                     if (whereIn != null && whereIn.Length > 0)
                     {
                         string sql = string.Format("delete from {0} where {1} in ({2})", type.Name, GetPrimaryKey(type), Common.ToJoinSqlInVal(whereIn));
+                        int deleteRowCount = db.ExecuteNonQuery(sql);
+                        message = string.Format("{0}行受影响", deleteRowCount);
+                        isSuccess = deleteRowCount > 0;
+                    }
+                    return isSuccess;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        /// <summary>
+        /// 批量删除
+        /// 用法:
+        /// Delete<T>("pid",new int[]{1,2,3})
+        /// 或者
+        /// Delete<T>(3)
+        /// </summary>
+        /// <param name="oc"></param>
+        /// <param name="whereIn">in的集合</param>
+        /// <param name="whereIn">主键为实体的第一个属性</param>
+        public bool Delete<TEntity>(string inFiled,params dynamic[] whereIn)
+        {
+            try
+            {
+                using (SQLiteHelper db = new SQLiteHelper(_connstr))
+                {
+
+                    Type type = typeof(TEntity);
+                    string key = type.FullName;
+                    bool isSuccess = false;
+                    if (whereIn != null && whereIn.Length > 0)
+                    {
+                        string sql = string.Format("delete from {0} where {1} in ({2})", type.Name, inFiled, Common.ToJoinSqlInVal(whereIn));
                         int deleteRowCount = db.ExecuteNonQuery(sql);
                         message = string.Format("{0}行受影响", deleteRowCount);
                         isSuccess = deleteRowCount > 0;

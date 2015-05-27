@@ -90,7 +90,8 @@ namespace Easyliter
             string replaceGuid = Guid.NewGuid().ToString();
             foreach (PropertyInfo r in propertiesObj)
             {
-                reval.Add(r.Name, r.GetValue(obj, null).ToString());
+                var val=r.GetValue(obj, null);
+                reval.Add(r.Name, val == null ? "" : val.ToString());
             }
 
             return reval;

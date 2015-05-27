@@ -91,11 +91,18 @@ namespace test
             string sql = extObj.ToSql();
 
             //left join
-            List<V_Product> productList = e.Query<Product>()
+            List<V_Product> VProductList = e.Query<Product>()
                 .Join<Product, Category>(false /* true is  inner join*/ ) 
                 .On(" Product.category_id=Category.id ")
                 .OrderBy(El_Sort.desc, " Product.id")
                 .Select("Product.*,Category.name as category_name").JoinWhere("Product.id>300").ToNewList<Product, V_Product>();
+
+            //left join
+            string VProductSql = e.Query<Product>()
+                 .Join<Product, Category>(false /* true is  inner join*/ )
+                 .On(" Product.category_id=Category.id ")
+                 .OrderBy(El_Sort.desc, " Product.id")
+                 .Select("Product.*,Category.name as category_name").JoinWhere("Product.id>300").ToSql();
         }
 
 

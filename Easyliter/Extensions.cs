@@ -159,6 +159,15 @@ namespace Easyliter
             return entity.e.Select<T>(sql);
 
         }
+
+        public static int Count<T>(this El_Queryable<T> entity) where T : new()
+        {
+            string sql = entity.ToSql();
+            sql = Regex.Replace(sql, "select(.*?)from", "select count(*) from ");
+            var count=entity.e.GetInt(sql);
+            return count;
+
+        }
         public static DataTable ToDataTable<T>(this El_Queryable<T> entity) where T : new()
         {
             string sql = entity.ToSql();

@@ -134,12 +134,7 @@ namespace Easyliter
                 }
                 else
                 {
-                    var mexp = ((MemberExpression)exp);
-                    object value = (mexp.Expression as ConstantExpression).Value;
-                    string name = mexp.Member.Name;
-                    System.Reflection.FieldInfo info = value.GetType().GetField(name);
-                    object obj = info.GetValue(value);
-                    return obj + "";
+                    return Expression.Lambda(exp).Compile().DynamicInvoke() + "";
                 }
             }
             else if (exp is NewArrayExpression)
@@ -173,7 +168,7 @@ namespace Easyliter
                 else if (ce.Value is ValueType)
                     return ce.Value.ToString();
                 else if (ce.Value is string || ce.Value is DateTime || ce.Value is char)
-                    return string.Format("'{0}'", ce.Value.ToString());
+                    return string.Format("{0}", ce.Value.ToString());
             }
             else if (exp is UnaryExpression)
             {

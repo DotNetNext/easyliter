@@ -113,7 +113,7 @@ namespace Easyliter
                     sb = sb.Substring(0, sb.Length - 2) + " is not null";
             }
             else
-                sb += tmpStr;
+                sb += "'"+tmpStr+"'";
             return sb += ")";
         }
         //表达式路由计算 
